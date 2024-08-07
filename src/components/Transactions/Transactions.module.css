@@ -1,0 +1,30 @@
+.transactionsContainer {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+  margin: 0 auto;
+  margin-top: 1.5rem;
+}
+
+.transactionsContainer td {
+  padding: 1.25rem 2rem;
+  background: var(--gray-700);
+}
+
+.transactionsContainer td:first-child {
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+}
+
+.transactionsContainer td:last-child {
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.income {
+  color: var(--green-300);
+}
+
+.outcome {
+  color: var(--red-300);
+}
