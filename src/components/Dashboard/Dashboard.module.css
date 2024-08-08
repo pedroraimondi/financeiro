@@ -2,19 +2,25 @@
   width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 0.5rem;
 
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 0.5rem;
 
   margin-top: -5rem;
 }
 
 .dashboardCard {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  width: 100%;
+  padding: 0.5rem 1rem;
   background: var(--gray-600);
   border-radius: 6px;
-  padding: 2rem;
 }
 
 .dashboardCard header {
@@ -26,8 +32,9 @@
 
 .dashboardCard strong {
   display: block;
-  margin-top: 1rem;
-  font-size: 2rem;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  text-align: right;
 }
 
 .primary {
@@ -36,4 +43,41 @@
 
 .secondary {
   background: var(--yellow-700);
+}
+
+@media (min-width: 400px) {
+  .dashboardContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: -3rem;
+  }
+
+  .dashboardCard {
+    display: block;
+    min-width: 30%;
+    padding: 0.7rem;
+  }
+
+  .dashboardCard strong {
+    text-align: unset;
+  }
+}
+
+@media (min-width: 768px) {
+  .dashboardContainer {
+    padding: 0 1.5rem;
+    margin-top: -5rem;
+    gap: 2rem;
+  }
+
+  .dashboardCard {
+    display: block;
+    padding: 2rem;
+  }
+
+  .dashboardCard strong {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+  }
 }

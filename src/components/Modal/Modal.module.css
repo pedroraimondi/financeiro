@@ -1,0 +1,77 @@
+.modalBackground {
+  position: absolute;  
+  top: 0;
+  left: 0;
+
+  height: 100vh;
+  width: 100vw;
+
+  background-color: rgba(0,0,0,0.75);
+}
+
+.modalContent {
+  min-width: 32rem;
+  border-radius: 6px;
+  padding: 2.5rem 3rem;
+  background: var(--gray-800);
+
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.closeButton {
+  position: absolute;
+  background: transparent;
+  border: 0;
+  top: 2.5rem;
+  right: 3rem;
+  line-height: 0;
+  cursor: pointer;
+  color: var(--gray-500);
+}
+
+/* 
+form {
+  margin-top: 2rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+}
+
+input {
+  border-radius: 6px;
+  border: 0;
+  background: var(--gray-900);
+  color: var(--gray-300);
+  padding: 1rem;
+}
+
+input::placeholder {
+  color: var(--gray-500);
+}
+
+button[type='submit'] {
+  height: 50px;
+  border: 0;
+  background: var(--green-500);
+  color: var(--white);
+  font-weight: bold;
+  padding: 0 1.25rem;
+  border-radius: 6px;
+  margin-top: 1.25rem;
+  cursor: pointer;
+}
+
+button[type='submit']:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button[type='submit']:not(:disabled):hover {
+  background: var(--green-700);
+  transition: background-color 0.2s;
+} */

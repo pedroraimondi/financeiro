@@ -77,15 +77,15 @@ export default function Transactions() {
         {transactions.map((transaction) => {
           return (
             <tr key={transaction.id}>
-              <td width="50%">{transaction.description}</td>
-              <td>
+              <td className={styles.transactionsCardTitle} width="50%">{transaction.description}</td>
+              <td className={styles.transactionsCardPrice}>
                 <span className={styles[transaction.type]}>
                   {transaction.type === 'outcome' && '- '}
                   {priceFormatter.format(transaction.price)}
                 </span>
               </td>
-              <td>{transaction.category}</td>
-              <td>
+              <td className={styles.transactionsCardCategory}>{transaction.category}</td>
+              <td className={styles.transactionsCardCreatedAt}>
                 {dateFormatter.format(new Date(transaction.createdAt))}
               </td>
             </tr>

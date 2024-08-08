@@ -1,8 +1,8 @@
 'use client'
 
-import Accounts from "@/components/Accounts";
 import Dashboard from "@/components/Dashboard";
 import Header from "@/components/Header";
+import Transactions from "@/components/Transactions";
 import styles from "@/styles/Home.module.css";
 import useWindowSize from "@/utils/useWindowSize";
 import Head from "next/head";
@@ -48,7 +48,7 @@ export default function Home() {
       <main className={styles.main}>
         <Header account={account} handleAccounts={handleAccounts} />
         <Dashboard account={account} />
-        <Accounts width={width} account={account} />
+        <Transactions width={width} account={account} />
       </main>
     </>
   );
