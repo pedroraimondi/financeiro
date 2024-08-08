@@ -1,6 +1,8 @@
+import styles from './Input.module.css'
 
-export default function InputText() {
+export default function InputText({ field, ...props }) {
+
   return (
-    <input />
+    <input className={styles.input} {...field} {...props} />
   )
 }

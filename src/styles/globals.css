@@ -43,6 +43,88 @@ body {
   overflow-x: hidden;
 }
 
-body, input, textarea, button {
+body,
+input,
+textarea,
+button {
   font: 400 1rem Roboto, sans-serif;
+}
+
+.css-b62m3t-container:focus-visible {
+  outline: none !important;
+  border: none !important;
+}
+
+.inputSelect__control {
+  border-radius: 6px !important;
+  background-color: var(--gray-900) !important;
+  color: var(--gray-100) !important;
+  border: 0 !important;
+  padding: 0.5rem;
+}
+
+.css-t3ipsp-control:hover {
+  border: none !important;
+}
+
+.inputSelect__input {
+  color: var(--gray-300) !important;
+}
+
+.inputSelect__input-container {
+  border: none !important;
+  box-shadow: unset !important;
+}
+
+.inputSelect__input-container input:focus {
+  box-shadow: none !important;
+}
+
+.inputSelect__control:hover {
+  border: none !important;
+  box-shadow: unset !important;
+}
+
+.inputSelect__single-value {
+  color: var(--gray-100) !important;
+}
+
+.inputSelect__indicator-separator {
+  display: none;
+}
+
+.inputSelect__dropdown-indicator::after {
+  content: '';
+  height: 0;
+  width: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid var(--gray-600);
+}
+
+.inputSelect__dropdown-indicator svg {
+  display: none;
+}
+
+.inputSelect__option--is-selected {
+  border: none;
+  background: var(--green-700) !important;
+}
+
+.inputSelect__control--is-focused {
+  outline: none !important;
+}
+
+.inputSelect__option--is-focused {
+  background: var(--green-500) !important;
+  font-weight: bold !important;
+}
+
+.inputSelect__menu--is-focused {
+  background-color: var(--gray-900) !important;
+}
+
+.inputSelect__menu {
+  background-color: var(--gray-900) !important;
+  color: var(--gray-100) !important;
 }

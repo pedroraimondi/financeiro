@@ -80,8 +80,7 @@ export default function Transactions() {
               <td className={styles.transactionsCardTitle} width="50%">{transaction.description}</td>
               <td className={styles.transactionsCardPrice}>
                 <span className={styles[transaction.type]}>
-                  {transaction.type === 'outcome' && '- '}
-                  {priceFormatter.format(transaction.price)}
+                  {priceFormatter(transaction.type === 'outcome' ? -transaction.price : transaction.price)}
                 </span>
               </td>
               <td className={styles.transactionsCardCategory}>{transaction.category}</td>

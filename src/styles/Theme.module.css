@@ -27,6 +27,16 @@
   transition: background-color 0.2s;
 }
 
+.dark {
+  background: var(--gray-700);
+  color: var(--gray-300);
+}
+
+.red {
+  background: var(--red-500);
+  color: var(--white);
+}
+
 @media (min-width: 768px) {
   .button {
     width: auto;

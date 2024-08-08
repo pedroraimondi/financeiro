@@ -33,7 +33,7 @@ export default function Dashboard({ account }) {
             <dashboard.icon size={32} color={dashboard.color} />
           </header>
 
-          <strong>{priceFormatter.format(account[dashboard.valueType])}</strong>
+          <strong>{priceFormatter(account[dashboard.valueType])}</strong>
         </div>
       ))}
     </div>
