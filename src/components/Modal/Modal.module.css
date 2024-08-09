@@ -10,7 +10,8 @@
 }
 
 .modalContent {
-  min-width: 32rem;
+  width: 100%;
+  max-width: 40rem;
   border-radius: 6px;
   padding: 2.5rem 3rem;
   background: var(--gray-800);

@@ -23,6 +23,22 @@
   --red-700: #7A1921;
 }
 
+/* width */
+::-webkit-scrollbar {
+  width: 15px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--gray-600); 
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gray-500); 
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -71,6 +87,14 @@ button {
   background-color: var(--gray-900) !important;
 }
 
+.inputSelect__placeholder {
+  color: var(--gray-500) !important;
+}
+
+.inputSelect__value-container {
+  min-height: 31px !important;
+}
+
 .inputSelect__control--is-disabled .inputSelect__placeholder {
   color: var(--gray-600) !important;
   text-decoration: line-through !important;
@@ -86,6 +110,7 @@ button {
 
 .inputSelect__input-container {
   border: none !important;
+  color: var(--gray-500) !important;
   box-shadow: unset !important;
 }
 

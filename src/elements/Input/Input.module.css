@@ -19,3 +19,58 @@
 .disabled::placeholder {
   color: var(--gray-600);
 }
+
+/* ----------------------------------------------------------------------------------------------------------- */
+
+.inputMultipleContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputMultipleContainerTitle {
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+}
+
+.inputMultipleContainerHeaderButton {
+  cursor: pointer;
+}
+
+.inputMultipleContainerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: var(--gray-900);
+
+  max-height: 200px;
+  overflow-y: scroll;
+
+  padding: 1rem;
+
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+.inputMultipleContainerList input {
+  border: 2px solid var(--gray-600);
+}
+
+.inputMultipleContainerHeader {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+
+  background: var(--gray-900);
+  color: var(--gray-500) !important;
+  padding: 1rem;
+  
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.removeButton {
+  cursor: pointer;
+}

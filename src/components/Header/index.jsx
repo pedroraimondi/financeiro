@@ -1,22 +1,31 @@
-import Image from 'next/image';
-import styles from './Header.module.css'
+'use client';
+
 import Button from '@/elements/Button';
+import Input from '@/elements/Input';
+import axios from 'axios';
+import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react';
+import { useState } from 'react';
 import Logo from '../../../public/logo';
 import Modal from '../Modal/Modal';
-import { useState } from 'react';
-import Input from '@/elements/Input';
-import { ArrowCircleUp, ArrowCircleDown } from 'phosphor-react'
-import axios from 'axios';
+import styles from './Header.module.css';
 
 export default function Header({ account, handleAccounts }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fields, setFields] = useState({
     description: { value: '' },
     price: { value: '' },
+    quantity: { value: '' },
     category: { value: '' },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
-    paymentDestinationData: { value: '' },
+    paymentDestinationData: {
+      value: [
+        {
+          quantity: { value: '' },
+          name: { value: '' },
+        },
+      ]
+    },
   });
 
   const variation = account.id === 0 ? 'primary' : 'secondary';
@@ -32,9 +41,9 @@ export default function Header({ account, handleAccounts }) {
     return e;
   }
 
-  const isPaymentDestinationDisabled = fields?.transactionType?.value != 'outcome';
+  const isPaymentDestinationIncome = fields?.transactionType?.value != 'outcome';
 
-  const transactionFields = {
+  const transactionFields = (() => ({
     description: {
       ...fields.description,
       name: 'description',
@@ -42,10 +51,17 @@ export default function Header({ account, handleAccounts }) {
       placeholder: 'Descrição',
       onChange
     },
+    quantity: {
+      ...fields.quantity,
+      name: 'quantity',
+      type: 'number',
+      placeholder: 'Qtd',
+      onChange
+    },
     price: {
       ...fields.price,
       name: 'price',
-      type: 'number',
+      type: 'price',
       placeholder: 'Preço',
       onChange
     },
@@ -70,7 +86,7 @@ export default function Header({ account, handleAccounts }) {
       name: 'paymentDestination',
       type: 'select',
       placeholder: 'Destino',
-      disabled: isPaymentDestinationDisabled,
+      disabled: isPaymentDestinationIncome,
       options: [
         { label: 'Prestador', value: 'Prestador' },
         { label: 'Empresa', value: 'Empresa' },
@@ -80,12 +96,58 @@ export default function Header({ account, handleAccounts }) {
     paymentDestinationData: {
       ...fields.paymentDestinationData,
       name: 'paymentDestinationData',
-      type: 'text',
-      disabled: isPaymentDestinationDisabled,
-      placeholder: fields?.paymentDestination?.value?.label || 'Prestador/Empresa',
-      onChange
+      type: 'subFields',
+      disabled: isPaymentDestinationIncome,
+      title: fields?.paymentDestination?.value?.label || 'Prestador/Empresa',
+      subFieldFormStyle: styles.subFieldFormStyle,
+      subFields: {
+        quantity: {
+          name: 'quantity',
+          type: 'price',
+          placeholder: 'Quantia',
+          onChange: (value, i) => {
+            setFields((oldFields) => {
+              const newFields = { ...oldFields };
+              newFields.paymentDestinationData.value[i].quantity.value = value;
+              return newFields;
+            })
+          }
+        },
+        name: {
+          name: 'name',
+          type: 'text',
+          placeholder: 'Nome',
+          onChange: (value, i) => {
+            setFields((oldFields) => {
+              const newFields = { ...oldFields };
+              newFields.paymentDestinationData.value[i].name.value = value;
+              return newFields;
+            })
+          }
+        }
+      },
+      onAddField: () => {
+        setFields((oldFields) => {
+          const newFields = { ...oldFields };
+          newFields.paymentDestinationData.value = [...newFields.paymentDestinationData.value, {
+            quantity: { value: '' },
+            name: { value: '' },
+          }]
+          return newFields;
+        })
+      },
+      onRemoveField: (i) => {
+        setFields((oldFields) => {
+          const newFields = { ...oldFields };
+          newFields.paymentDestinationData.value = newFields.paymentDestinationData.value.filter((_field, subI) => {
+            console.log(subI, i);
+            return subI !== i
+          })
+          return newFields;
+        })
+      },
     }
-  }
+  }))()
 
   // if (isPaymentDestinationDisabled) {
   //   delete transactionFields.paymentDestination
@@ -97,15 +159,42 @@ export default function Header({ account, handleAccounts }) {
     setFields({
       description: { value: '' },
       price: { value: '' },
+      quantity: { value: '' },
       category: { value: '' },
       transactionType: { value: 'income' },
       paymentDestination: { value: '' },
-      paymentDestinationData: { value: '' },
+      paymentDestinationData: {
+        value: [
+          {
+            quantity: { value: '' },
+            name: { value: '' },
+          },
+        ]
+      },
     })
   }
 
-  const handleSubmit = () => {
+  const handleTransactionTypeButtonsClick = (transactionType) => {
 
+    setFields((oldFields) => {
+      const newFields = { ...oldFields };
+      newFields.transactionType.value = transactionType;
+      newFields.paymentDestination.value = '';
+      newFields.paymentDestinationData.value = [
+        {
+          quantity: { value: '' },
+          name: { value: '' },
+        },
+      ];
+      return newFields;
+    })
+
+    onChange({ target: { name: 'paymentDestination', value: '' } })
+
+  }
+
+  const handleSubmit = () => {
+    console.log(fields)
   }
 
   return (
@@ -130,7 +219,7 @@ export default function Header({ account, handleAccounts }) {
           <h2>Nova Transação</h2>
           {Object.values(transactionFields).map((field) => <Input key={field.name} field={field} setField={setFields} />)}
           <div className={styles.inputButton}>
-            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'income' } })} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"} /> Entrada</Button>
+            <Button onClick={() => { handleTransactionTypeButtonsClick('income') }} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"} /> Entrada</Button>
             <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>
           </div>
           <Button onClick={handleSubmit} variation="primary">Cadastrar</Button>

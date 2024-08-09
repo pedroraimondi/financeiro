@@ -51,6 +51,7 @@ export default function InputSelect({
       defaultOptions={options || true}
       name={name}
       key={name}
+      style={{ gridArea: name }}
       onCreateOption={handleCreate}
       classNamePrefix="inputSelect"
       loadOptions={loadOptionsHandler}

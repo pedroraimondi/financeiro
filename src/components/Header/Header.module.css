@@ -81,15 +81,30 @@
   cursor: pointer;
   border: 0px;
   font-weight: normal;
-} 
+}
+
+.subFieldFormStyle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
 @media (min-width: 400px) {
   .headerContainer {
     padding: 1.5rem 0 4rem;
   }
+
 }
 
 @media (min-width: 768px) {
+
+  .subFieldFormStyle {
+    display: grid;
+    grid-template-columns: 1fr 30% 20px;
+    grid-template-areas: "name quantity";
+    align-items: center;
+  }
+
   .headerContainer {
     padding: 2.5rem 0 7.5rem;
   }
