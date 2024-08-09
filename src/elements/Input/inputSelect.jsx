@@ -24,11 +24,19 @@ export default function InputSelect({
   const loadOptionsHandler = (inputValue, callback) => {
     if (loadOptions) {
       if (isCreatable || !loadEmpty) {
-        if (inputValue.length > 1) { loadOptions(inputValue, callback) }
-      } else { loadOptions(inputValue, callback) }
+        if (inputValue.length > 1) {
+          loadOptions(inputValue, callback)
+        } else {
+          callback(null);
+        }
+      } else {
+        loadOptions(inputValue, callback)
+      }
     } else if (options) {
       callback(options)
-    } else { callback([]) }
+    } else {
+      callback([])
+    }
   };
 
   return (
@@ -50,7 +58,7 @@ export default function InputSelect({
       isMulti={isMulti}
       isSearchable={isSearchable}
       isDisabled={disabled}
-      isValidNewOption={(inputValue) => isCreatable && inputValue.length > 2 }
+      isValidNewOption={(inputValue) => isCreatable && inputValue.length > 2}
       formatCreateLabel={(inputValue) => inputValue}
       noOptionsMessage={() => noOptionsMessage ? noOptionsMessage : "Sem opções"}
       loadingMessage={() => "Carregando"}

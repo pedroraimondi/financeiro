@@ -17,7 +17,7 @@ export default function Home() {
       total: 1000,
       id: 0,
       variation: 'primary',
-      color: '#00875F'
+      color: '#00B37E'
     },
     1: {
       income: 3500,

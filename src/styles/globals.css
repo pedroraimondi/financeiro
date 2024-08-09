@@ -63,6 +63,19 @@ button {
   padding: 0.5rem;
 }
 
+.inputSelect__control .inputSelect__control--is-disabled {
+  cursor: not-allowed;
+}
+
+.inputSelect__control--is-disabled {
+  background-color: var(--gray-900) !important;
+}
+
+.inputSelect__control--is-disabled .inputSelect__placeholder {
+  color: var(--gray-600) !important;
+  text-decoration: line-through !important;
+}
+
 .css-t3ipsp-control:hover {
   border: none !important;
 }

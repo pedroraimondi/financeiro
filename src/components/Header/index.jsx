@@ -14,10 +14,11 @@ export default function Header({ account, handleAccounts }) {
     description: { value: '' },
     price: { value: '' },
     category: { value: '' },
-    transactionType: { value: '' },
+    transactionType: { value: 'income' },
     paymentDestination: { value: '' },
     paymentDestinationData: { value: '' },
   });
+
   const variation = account.id === 0 ? 'primary' : 'secondary';
 
   const onChange = (e) => {
@@ -30,6 +31,8 @@ export default function Header({ account, handleAccounts }) {
 
     return e;
   }
+
+  const isPaymentDestinationDisabled = fields?.transactionType?.value != 'outcome';
 
   const transactionFields = {
     description: {
@@ -67,6 +70,7 @@ export default function Header({ account, handleAccounts }) {
       name: 'paymentDestination',
       type: 'select',
       placeholder: 'Destino',
+      disabled: isPaymentDestinationDisabled,
       options: [
         { label: 'Prestador', value: 'Prestador' },
         { label: 'Empresa', value: 'Empresa' },
@@ -77,32 +81,47 @@ export default function Header({ account, handleAccounts }) {
       ...fields.paymentDestinationData,
       name: 'paymentDestinationData',
       type: 'text',
-      placeholder: 'Prestador/Empresa',
+      disabled: isPaymentDestinationDisabled,
+      placeholder: fields?.paymentDestination?.value?.label || 'Prestador/Empresa',
       onChange
     }
   }
 
-  if (fields?.transactionType?.value != 'outcome') {
-    delete transactionFields.paymentDestination
-    delete transactionFields.paymentDestinationData
-  }
+  // if (isPaymentDestinationDisabled) {
+  //   delete transactionFields.paymentDestination
+  //   delete transactionFields.paymentDestinationData
+  // }
 
   const toggleOpen = (status) => {
     setIsOpen(status != undefined ? status : !isOpen)
+    setFields({
+      description: { value: '' },
+      price: { value: '' },
+      category: { value: '' },
+      transactionType: { value: 'income' },
+      paymentDestination: { value: '' },
+      paymentDestinationData: { value: '' },
+    })
+  }
+
+  const handleSubmit = () => {
+
   }
 
   return (
     <div className={`${styles.headerContainer} ${styles[variation]}`}>
       <div className={styles.headerContent}>
 
-        {Logo(account.color)}
+        <div>{Logo(account.color)}</div>
 
         <div className={styles.accounts}>
           <Button variation={account.id == 0 && 'primary'} onClick={() => handleAccounts(0)}>Conta 1</Button>
           <Button variation={account.id == 1 && 'secondary'} onClick={() => handleAccounts(1)}>Conta 2</Button>
         </div>
 
-        <Button variation={variation} onClick={toggleOpen}>Nova transação</Button>
+        <div className={styles.newTransactionButton}>
+          <Button variation={variation} onClick={toggleOpen}>Nova transação</Button>
+        </div>
 
       </div>
 
@@ -111,9 +130,10 @@ export default function Header({ account, handleAccounts }) {
           <h2>Nova Transação</h2>
           {Object.values(transactionFields).map((field) => <Input key={field.name} field={field} setField={setFields} />)}
           <div className={styles.inputButton}>
-            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'income' } })} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={32} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"}/> Entrada</Button>
-            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={32} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"}/>Saida</Button>
+            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'income' } })} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"} /> Entrada</Button>
+            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>
           </div>
+          <Button onClick={handleSubmit} variation="primary">Cadastrar</Button>
         </div>
       </Modal>
     </div>
