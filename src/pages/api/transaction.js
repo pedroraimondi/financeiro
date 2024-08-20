@@ -52,6 +52,15 @@ export default async function handler(req, res) {
       } catch (error) {
         return res.status(500).json({ message: "Something went wrong!" });
       }
+    case 'DELETE':
+      try {
+        console.log(query)
+        await Transaction.findByIdAndDelete(query);
+        return res.status(200).json({ message: "Success" });
+      } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Something went wrong!" });
+      }
     default:
       return res.status(405).json({ errorMessage: `Method ${method} Not Allowed` })
   }

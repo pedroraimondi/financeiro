@@ -9,7 +9,7 @@ import Logo from '../../../public/logo';
 import Modal from '../Modal/Modal';
 import styles from './Header.module.css';
 
-export default function Header({ account, accounts, handleAccounts }) {
+export default function Header({ account, accounts, handleAccounts, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fields, setFields] = useState({
     description: { value: '' },
@@ -210,7 +210,7 @@ export default function Header({ account, accounts, handleAccounts }) {
     }
     
     await axios.post('/api/transaction', data);
-
+    fetchTransactions()
     setIsOpen(false);
   }
 

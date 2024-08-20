@@ -15,13 +15,13 @@ export default function Home({ accounts: accountsString }) {
   const [transactions, setTransactions] = useState({ transactions: [], income: 0, outcome: 0, total: 0 });
   const [account, setAccount] = useState(accounts[0] || {});
 
-  console.log(transactions)
+  const fetchTransactions = () => axios.get('/api/transaction', { params: { account: account._id } })
+    .then((response) => {
+      setTransactions(response.data);
+    });
 
   useEffect(() => {
-    axios.get('/api/transaction', { params: { account: account._id } })
-      .then((response) => {
-        setTransactions(response.data);
-      });
+    fetchTransactions()
   }, [account])
 
   const { width } = useWindowSize();
@@ -39,10 +39,9 @@ export default function Home({ accounts: accountsString }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Header account={account} transactions={transactions} accounts={accounts} handleAccounts={handleAccounts} />
+        <Header account={account} transactions={transactions} fetchTransactions={fetchTransactions} accounts={accounts} handleAccounts={handleAccounts} />
         <Dashboard transactions={transactions} account={account} />
-
-        <Transactions transactions={transactions.transactions} width={width} account={account} />
+        <Transactions transactions={transactions.transactions} width={width} account={account} fetchTransactions={fetchTransactions} />
       </main>
     </>
   );

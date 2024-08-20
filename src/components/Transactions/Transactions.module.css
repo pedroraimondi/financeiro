@@ -48,12 +48,10 @@
 .transactionsCardCategory {
   grid-area: category;
   text-align: right;
-  border-bottom-right-radius: 6px;
 }
 
 .transactionsCardCreatedAt {
   grid-area: createdAt;
-  border-bottom-left-radius: 6px;
 }
 
 .transactionsContainer tbody {
@@ -68,6 +66,7 @@
   grid-template-areas:
     "title price"
     "createdAt category"
+    "options options"
   ;
   margin-bottom: 0.5rem;
 }
@@ -78,8 +77,17 @@
   background: var(--gray-700);
 }
 
-.negativeSymbol {
-  margin-left: -9px;
+.options {
+  display: flex;
+  justify-content: space-between;
+  grid-area: options;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
+  gap: 8px;
+}
+
+.optionsButton {
+  cursor: pointer;
 }
 
 .income {
@@ -98,6 +106,11 @@
 
   .filter {
     margin: -1rem 0 0.1rem;
+  }
+
+  .options {
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: unset;
   }
 
   .transactionsContainer td {

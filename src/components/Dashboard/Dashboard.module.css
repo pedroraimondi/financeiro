@@ -37,6 +37,10 @@
   text-align: right;
 }
 
+.filter .tui-datepicker {
+  position: unset !important;
+}
+
 .primary {
   background: var(--green-500);
 }
