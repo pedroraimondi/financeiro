@@ -1,5 +1,5 @@
 import connectToDatabase from "../../../middleware/mongodb";
-import Category from "../../../models/category";
+import Account from "../../../models/account";
 
 export default async function handler(req, res) {
   await connectToDatabase();
@@ -11,16 +11,16 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const categories = await Category.find({});
+        const accounts = await Account.find({});
 
-        res.status(200).json(categories);
+        res.status(200).json(accounts);
       } catch (error) {
         res.status(500).json({ message: "Something went wrong!" });
       } 
     case 'POST':
       try {
-        const category = new Category({ ...body });
-        await category.save();
+        const account = new Account({ ...body });
+        await account.save();
         return res.status(200).json({ message: "Success" });
       } catch (error) {
         res.status(500).json({ message: "Something went wrong!" });

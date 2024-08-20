@@ -9,12 +9,12 @@ import Logo from '../../../public/logo';
 import Modal from '../Modal/Modal';
 import styles from './Header.module.css';
 
-export default function Header({ account, handleAccounts }) {
+export default function Header({ account, accounts, handleAccounts }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fields, setFields] = useState({
     description: { value: '' },
-    price: { value: '' },
     quantity: { value: '' },
+    price: { value: '' },
     category: { value: '' },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
@@ -27,8 +27,6 @@ export default function Header({ account, handleAccounts }) {
       ]
     },
   });
-
-  const variation = account.id === 0 ? 'primary' : 'secondary';
 
   const onChange = (e) => {
     const { target: { value, name } } = e;
@@ -193,23 +191,43 @@ export default function Header({ account, handleAccounts }) {
 
   }
 
-  const handleSubmit = () => {
-    console.log(fields)
+  const handleSubmit = async () => {
+    const data = {
+      description: fields.description.value,
+      quantity: fields.quantity.value,
+      value: parseFloat(fields.price.value.replace(/[^\d.,]/g, '').replace(',', '.')),
+      category: fields.category?.value?.label,
+      type: fields.transactionType.value,
+      account: account._id,
+    }
+    
+    if(data.type === 'outcome') {
+      data.destination = fields.paymentDestination.value?.value;
+      data.recipients = fields.paymentDestinationData.value.map((recipient) => ({
+        quantity: parseFloat(recipient.quantity.value.replace(/[^\d.,]/g, '').replace(',', '.')),
+        name: recipient.name.value
+      }))
+    }
+    
+    await axios.post('/api/transaction', data);
+
+    setIsOpen(false);
   }
 
   return (
-    <div className={`${styles.headerContainer} ${styles[variation]}`}>
+    <div className={`${styles.headerContainer} ${styles[account.variation]}`}>
       <div className={styles.headerContent}>
 
-        <div>{Logo(account.color)}</div>
+        <div>{Logo(account.color)}</div> 
 
         <div className={styles.accounts}>
-          <Button variation={account.id == 0 && 'primary'} onClick={() => handleAccounts(0)}>Conta 1</Button>
-          <Button variation={account.id == 1 && 'secondary'} onClick={() => handleAccounts(1)}>Conta 2</Button>
+          {Object.values(accounts)?.map((acc) => (
+            <Button variation={acc.variation} disabled={acc._id != account._id} onClick={() => handleAccounts(acc)}>{acc.name}</Button>
+          ))}
         </div>
 
         <div className={styles.newTransactionButton}>
-          <Button variation={variation} onClick={toggleOpen}>Nova transação</Button>
+          <Button variation={account.variation} onClick={toggleOpen}>Nova transação</Button>
         </div>
 
       </div>

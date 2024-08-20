@@ -12,6 +12,9 @@
 .modalContent {
   width: 100%;
   max-width: 40rem;
+  height: 90vh;
+  overflow-y: scroll;
+
   border-radius: 6px;
   padding: 2.5rem 3rem;
   background: var(--gray-800);

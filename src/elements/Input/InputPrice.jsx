@@ -4,8 +4,6 @@ import InputText from './InputText';
 
 export default function InputPrice({ field, ...props }) {
 
-  console.log(field, props)
-
   const onBlur = ({ target: { value } }) => {
     return field.onChange({
       target: {

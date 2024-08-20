@@ -1,7 +1,6 @@
 import styles from './Input.module.css'
 
 export default function InputText({ field, i, ...props }) {
-  console.log(field);
 
   const onChange = (e) => { field.onChange(e, i) }
 

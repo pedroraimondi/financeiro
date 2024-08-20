@@ -36,10 +36,6 @@
   left: 0;
 }
 
-.accounts button {
-  width: 20%;
-}
-
 .primary {
   border-bottom: 2px solid var(--green-300);
 }

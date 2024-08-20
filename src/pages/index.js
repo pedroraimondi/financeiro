@@ -1,40 +1,33 @@
-'use client'
-
 import Dashboard from "@/components/Dashboard";
 import Header from "@/components/Header";
 import Transactions from "@/components/Transactions";
 import styles from "@/styles/Home.module.css";
 import useWindowSize from "@/utils/useWindowSize";
+import axios from "axios";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import connectToDatabase from "../../middleware/mongodb";
+import Account from "../../models/account";
 
-export default function Home() {
+export default function Home({ accounts: accountsString }) {
+  const accounts = accountsString ? JSON.parse(accountsString) : [];
 
-  const accounts = {
-    0: {
-      income: 3000,
-      outcome: 2000,
-      total: 1000,
-      id: 0,
-      variation: 'primary',
-      color: '#00B37E'
-    },
-    1: {
-      income: 3500,
-      outcome: 1000,
-      total: 2500,
-      id: 1,
-      color: '#939300',
-      variation: 'secondary',
-    }
-  }
+  const [transactions, setTransactions] = useState({ transactions: [], income: 0, outcome: 0, total: 0 });
+  const [account, setAccount] = useState(accounts[0] || {});
 
-  const [account, setAccount] = useState(accounts[0]);
+  console.log(transactions)
+
+  useEffect(() => {
+    axios.get('/api/transaction', { params: { account: account._id } })
+      .then((response) => {
+        setTransactions(response.data);
+      });
+  }, [account])
 
   const { width } = useWindowSize();
 
   const handleAccounts = (targetAccount) => {
-    setAccount(accounts[targetAccount]);
+    setAccount(targetAccount);
   }
 
   return (
@@ -46,10 +39,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Header account={account} handleAccounts={handleAccounts} />
-        <Dashboard account={account} />
-        <Transactions width={width} account={account} />
+        <Header account={account} transactions={transactions} accounts={accounts} handleAccounts={handleAccounts} />
+        <Dashboard transactions={transactions} account={account} />
+
+        <Transactions transactions={transactions.transactions} width={width} account={account} />
       </main>
     </>
   );
+}
+
+export async function getServerSideProps({ req, res }) {
+  await connectToDatabase();
+
+  const accountsArray = await Account.find({});
+  const accounts = accountsArray?.length ? JSON.stringify(accountsArray) : '[]';
+
+  return { props: { accounts } }
+
 }

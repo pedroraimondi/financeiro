@@ -11,26 +11,49 @@
   padding-bottom: 60px;
 }
 
+.filters {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.filters button {
+  height: 30px;
+  width: 60px;
+  font-size: 10px;
+  font-weight: normal;
+  padding: 8px;
+  border: 1px solid #fff;
+  color: #fff;
+  background-color: transparent;
+}
+
+.filters button:hover {
+  background-color: #ccc;
+  color: #000;
+  border-color: transparent;
+}
+
 .transactionsCardTitle {
   grid-area: title;
   border-top-left-radius: 6px;
-  border-top-right-radius: 6px;
 }
 
 .transactionsCardPrice {
   grid-area: price;
   text-align: right;
-  border-bottom-left-radius: 6px;
+  border-top-right-radius: 6px;
 }
 
 .transactionsCardCategory {
   grid-area: category;
   text-align: right;
+  border-bottom-right-radius: 6px;
 }
 
 .transactionsCardCreatedAt {
   grid-area: createdAt;
-  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .transactionsContainer tbody {
@@ -73,6 +96,14 @@
     margin-bottom: unset;
   }
 
+  .filter {
+    margin: -1rem 0 0.1rem;
+  }
+
+  .transactionsContainer td {
+    width: unset;
+  }
+
   .transactionsCardTitle {
     border-radius: 0;
   }
@@ -85,11 +116,25 @@
     border-radius: 0;
   }
 
+  .transactionsContainer td:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+
+  .transactionsContainer td:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
+
+  .transactionsCardCategory {
+    border-bottom-right-radius: unset;;
+  }
+
 }
 
 @media (min-width: 768px) {
   .transactionsContainer {
-    margin-top: 1.5rem;
+    /* margin-top: 1.5rem; */
     padding: 0 1.5rem;
     padding-bottom: 60px;
   }
@@ -105,13 +150,5 @@
     padding: 1.25rem 2rem;
   }
 
-  .transactionsContainer td:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-  }
-
-  .transactionsContainer td:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-  }
+  
 }

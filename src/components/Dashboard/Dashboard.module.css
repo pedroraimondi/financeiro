@@ -38,11 +38,11 @@
 }
 
 .primary {
-  background: var(--green-700);
+  background: var(--green-500);
 }
 
 .secondary {
-  background: var(--yellow-700);
+  background: var(--yellow-500);
 }
 
 @media (min-width: 400px) {
