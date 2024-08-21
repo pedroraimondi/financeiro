@@ -8,6 +8,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import connectToDatabase from "../../middleware/mongodb";
 import Account from "../../models/account";
+import { Toaster } from "react-hot-toast";
 
 export default function Home({ accounts: accountsString }) {
   const accounts = accountsString ? JSON.parse(accountsString) : [];
@@ -39,6 +40,7 @@ export default function Home({ accounts: accountsString }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
+        <Toaster/>
         <Header account={account} transactions={transactions} fetchTransactions={fetchTransactions} accounts={accounts} handleAccounts={handleAccounts} />
         <Dashboard transactions={transactions} account={account} />
         <Transactions transactions={transactions.transactions} width={width} account={account} fetchTransactions={fetchTransactions} />

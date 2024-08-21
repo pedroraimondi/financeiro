@@ -1,0 +1,83 @@
+.modalForm {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modalForm h2 {
+  margin-bottom: 1rem;
+}
+
+.modalForm #paymentDestination {
+  padding: 0.7rem !important;
+}
+
+.modalFormGrid .inputSelect__control#category {
+  grid-area: category !important;
+}
+
+.modalFormGrid #paymentDestination {
+  grid-area: paymentDestination;
+}
+
+.modalFormGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+.inputButton {
+  display: flex;
+  gap: 16px;
+  grid-area: transactionType;
+}
+
+.inputButton button {
+  padding: 1rem;
+  width: 100%;
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 0px;
+  font-weight: normal;
+}
+
+
+.subFieldFormStyle {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+@media (min-width: 768px) {
+
+  .modalFormGrid {
+    display: grid;
+    grid-template-columns: 1fr 100px;
+    grid-template-areas:
+      "description description"
+      "price quantity"
+      "category category"
+      "paymentDestination paymentDestination"
+      "paymentDestinationData paymentDestinationData"
+      "transactionType transactionType"
+    ;
+    grid-row-gap: 16px;
+    grid-column-gap: 16px;
+  }
+
+
+  .subFieldFormStyle {
+    display: grid;
+    grid-template-columns: 1fr 30% 20px;
+    grid-template-areas: "name quantity";
+    align-items: center;
+  }
+
+}

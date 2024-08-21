@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
 
 var category = new Schema({
-  label: { type: String, required: true },
+  label: { type: String, required: true, unique: true },
 }, { timestamps: true });
 
 mongoose.models = {};

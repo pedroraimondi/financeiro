@@ -48,8 +48,24 @@ export default async function handler(req, res) {
       }
     case 'PUT':
       try {
-        return;
+        let updatedTransaction;
+        if (body?._id) { updatedTransaction = await Transaction.findById(body._id) }
+        if (!updatedTransaction) return res.status(404).json({ message: "Something went wrong!" });
+        let category = await Category.findOne({ label: body.category })
+        if (!category) {
+          console.log('Category not found')
+          const newCategory = new Category({ label: body.category });
+          await newCategory.save();
+          body.category = newCategory._id;
+        } else {
+          body.category = category._id
+        }
+        let hasChange = Object.keys(body).some(arg => updatedTransaction[arg] && (updatedTransaction[arg] !== arg[body]));
+        if (hasChange) { for (let arg in body) { updatedTransaction[arg] = body[arg]; } };
+        await updatedTransaction.save();
+        return res.status(200).json({ message: "Success" })
       } catch (error) {
+        console.log(error);
         return res.status(500).json({ message: "Something went wrong!" });
       }
     case 'DELETE':

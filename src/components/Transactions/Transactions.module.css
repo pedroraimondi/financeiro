@@ -94,6 +94,25 @@
   color: var(--red-300) !important;
 }
 
+.toastConfirm {
+  display: flex;
+  flex-direction: column;
+}
+
+.toastConfirm button {
+  width: 100%;
+  border: 0;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.toastConfirm #no {
+  background-color: var(--red-500);
+}
+
 @media (min-width: 400px) {
   .transactionsContainer tr {
     display: table-row;
@@ -136,7 +155,8 @@
   }
 
   .transactionsCardCategory {
-    border-bottom-right-radius: unset;;
+    border-bottom-right-radius: unset;
+    ;
   }
 
 }
@@ -147,7 +167,7 @@
     padding: 0 1.5rem;
     padding-bottom: 60px;
   }
-  
+
   .transactionsContainer tbody {
     font-size: 1rem;
   }
@@ -159,5 +179,5 @@
     padding: 1.25rem 2rem;
   }
 
-  
+
 }

@@ -12,7 +12,7 @@ export default function SubFields({ field, ...props }) {
           className={styles.inputMultipleContainerHeaderButton}
           onClick={() => { !field?.disabled && field?.onAddField() }}
         >
-          <PlusCircle size={24} color={field?.disabled ? "#323238" : "#00B37E"} />
+          <PlusCircle size={24} color={field?.disabled ? "#323238" : (field.color || "#00B37E")} />
         </div>
       </div>
       <div className={styles.inputMultipleContainerList}>

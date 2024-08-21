@@ -6,16 +6,8 @@ import InputText from './InputText';
 export default function InputPrice({ field, ...props }) {
 
   const customOnChange = (e) => {
-    // console.log(e)
-    const onlyDigits = e?.target?.value
-      .split("")
-      .filter(s => /\d/.test(s))
-      .join("")
-      .padStart(3, "0")
-      
-    const digitsFloat = onlyDigits.slice(0, -2) + "." + onlyDigits.slice(-2);
 
-    e.target.value = maskCurrency(digitsFloat);
+    e.target.value = maskCurrency(e.target.value);
 
     field.onChange(e);
   }

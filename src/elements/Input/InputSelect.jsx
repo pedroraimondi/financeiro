@@ -18,6 +18,7 @@ export default function InputSelect({
     filterField,
     noOptionsMessage,
     handleCreate,
+    value
   },
   ...props }) {
 
@@ -42,6 +43,7 @@ export default function InputSelect({
   return (
     <Select
       {...props}
+      value={value}
       axis="xy"
       id={name}
       instanceId={name}
