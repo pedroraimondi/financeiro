@@ -23,3 +23,14 @@ export const priceFormatter = (valor) => {
 
   return resultado;
 }
+
+export const maskCurrency = (valor, locale = 'pt-BR', currency = 'BRL') => {
+  return new Intl.NumberFormat(locale, {
+    style: 'currency',
+    currency
+  }).format(valor)
+}
+
+export const toFloat = (stringValue) => {
+  return parseFloat(stringValue.replace(/[^\d.,]/g, '').replace(".", "").replace(",", "."))
+}

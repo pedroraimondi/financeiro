@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose';
 
 var transaction = new Schema({
   description: { type: String, required: true },
-  quantity: { type: Number, required: true, default: 1 },
+  quantity: { type: Number, default: 1 },
   value: { type: Number, required: true },
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   type: { type: String, enum: ['income', 'outcome'], required: true },

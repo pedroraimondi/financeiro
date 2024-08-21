@@ -2,6 +2,7 @@
 
 import Button from '@/elements/Button';
 import Input from '@/elements/Input';
+import { toFloat } from '@/utils/formatter';
 import axios from 'axios';
 import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react';
 import { useState } from 'react';
@@ -104,6 +105,8 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
           type: 'price',
           placeholder: 'Quantia',
           onChange: (value, i) => {
+            console.log(fields.paymentDestinationData.value)
+
             setFields((oldFields) => {
               const newFields = { ...oldFields };
               newFields.paymentDestinationData.value[i].quantity.value = value;
@@ -195,39 +198,39 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
     const data = {
       description: fields.description.value,
       quantity: fields.quantity.value,
-      value: parseFloat(fields.price.value.replace(/[^\d.,]/g, '').replace(',', '.')),
+      value: toFloat(fields.price.value),
       category: fields.category?.value?.label,
       type: fields.transactionType.value,
       account: account._id,
     }
-    
-    if(data.type === 'outcome') {
+
+    if (data.type === 'outcome') {
       data.destination = fields.paymentDestination.value?.value;
       data.recipients = fields.paymentDestinationData.value.map((recipient) => ({
-        quantity: parseFloat(recipient.quantity.value.replace(/[^\d.,]/g, '').replace(',', '.')),
+        quantity: toFloat(recipient.quantity.value),
         name: recipient.name.value
       }))
     }
-    
+
     await axios.post('/api/transaction', data);
     fetchTransactions()
     setIsOpen(false);
   }
 
   return (
-    <div className={`${styles.headerContainer} ${styles[account.variation]}`}>
+    <div style={{ borderBottom: `2px solid ${account.color}` }} className={styles.headerContainer}>
       <div className={styles.headerContent}>
 
-        <div>{Logo(account.color)}</div> 
+        <div>{Logo(account.color)}</div>
 
         <div className={styles.accounts}>
           {Object.values(accounts)?.map((acc) => (
-            <Button variation={acc.variation} disabled={acc._id != account._id} onClick={() => handleAccounts(acc)}>{acc.name}</Button>
+            <Button color={acc.color} disabled={acc._id != account._id} onClick={() => handleAccounts(acc)}>{acc.name}</Button>
           ))}
         </div>
 
         <div className={styles.newTransactionButton}>
-          <Button variation={account.variation} onClick={toggleOpen}>Nova transação</Button>
+          <Button color={account.color} onClick={toggleOpen}>Nova transação</Button>
         </div>
 
       </div>
@@ -235,12 +238,14 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       <Modal isOpen={isOpen} toggleOpen={toggleOpen}>
         <div className={styles.modalForm}>
           <h2>Nova Transação</h2>
-          {Object.values(transactionFields).map((field) => <Input key={field.name} field={field} setField={setFields} />)}
-          <div className={styles.inputButton}>
-            <Button onClick={() => { handleTransactionTypeButtonsClick('income') }} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"} /> Entrada</Button>
-            <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>
+          <div className={styles.modalFormGrid}>
+            {Object.values(transactionFields).map((field) => <Input key={field.name} field={field} setField={setFields} />)}
+            <div className={styles.inputButton}>
+              <Button onClick={() => { handleTransactionTypeButtonsClick('income') }} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : "#00B37E"} /> Entrada</Button>
+              <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>
+            </div>
           </div>
-          <Button onClick={handleSubmit} variation="primary">Cadastrar</Button>
+          <Button onClick={handleSubmit} variation="primary" color={account.color}>Cadastrar</Button>
         </div>
       </Modal>
     </div>

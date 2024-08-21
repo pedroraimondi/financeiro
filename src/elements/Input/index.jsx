@@ -4,11 +4,11 @@ import InputText from "./InputText";
 import InputSelect from "./InputSelect";
 
 export default function Input(props) {
-  const { type } = props.field;
+  const { type, name } = props.field;
 
   switch (type) {
     case 'select':
-      return <InputSelect {...props} />
+      return <div style={{ gridArea: name }}><InputSelect {...props} /></div>
     case 'price': 
       return <InputPrice {...props} />;
     case 'subFields':

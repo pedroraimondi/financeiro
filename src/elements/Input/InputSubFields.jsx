@@ -5,7 +5,7 @@ import Input from './index';
 export default function SubFields({ field, ...props }) {
   const disabledStyle = field?.disabled && styles.disabled
   return (
-    <div className={styles.inputMultipleContainer}>
+    <div style={{ gridArea: field?.name }} className={styles.inputMultipleContainer}>
       <div className={styles.inputMultipleContainerHeader}>
         <span className={`${styles.inputMultipleContainerTitle} ${disabledStyle}`}>{field?.title}</span>
         <div

@@ -90,12 +90,8 @@
   cursor: pointer;
 }
 
-.income {
-  color: var(--green-300);
-}
-
 .outcome {
-  color: var(--red-300);
+  color: var(--red-300) !important;
 }
 
 @media (min-width: 400px) {

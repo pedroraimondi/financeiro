@@ -20,7 +20,7 @@ export default function Transactions({ transactions, account, fetchTransactions 
             <tr key={transaction._id}>
               <td className={styles.transactionsCardTitle} width="50%">{transaction.description}</td>
               <td className={styles.transactionsCardPrice}>
-                <span className={styles[transaction.type]}>
+                <span style={{ color: account.color }} className={styles[transaction.type]}>
                   {priceFormatter(transaction.type === 'outcome' ? -transaction.value : transaction.value)}
                 </span>
               </td>

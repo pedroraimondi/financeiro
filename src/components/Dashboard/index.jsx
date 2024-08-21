@@ -27,15 +27,10 @@ export default function Dashboard({ account, transactions }) {
     }
   ];
 
-  const options = {
-    language: 'en',
-    format: 'dd-MM-YYYY',
-  };
-
   return (
     <div className={styles.dashboardContainer}>
       {dashboards.map(dashboard => (
-        <div key={dashboard.valueType} className={`${styles.dashboardCard} ${dashboard.valueType == 'total' && styles[account.variation]}`}>
+        <div key={dashboard.valueType} style={dashboard.valueType == 'total' ? { backgroundColor: account.color } : {}} className={styles.dashboardCard}>
           <header>
             <span>{dashboard.label}</span>
             <dashboard.icon size={32} color={dashboard.color} />
@@ -44,16 +39,6 @@ export default function Dashboard({ account, transactions }) {
           <strong>{priceFormatter(transactions[dashboard.valueType])}</strong>
         </div>
       ))}
-      <div className={styles.filters}>
-        <TuiDateRangePicker
-          handleChange={(e) => console.log(e)}
-          options={options}
-          inputWidth={80}
-          containerWidth={200}
-          startpickerDate={new Date('2023-01-02')}
-          endpickerDate={new Date('2023-01-30')}
-        />
-      </div>
     </div>
   )
 }
