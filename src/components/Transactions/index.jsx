@@ -154,7 +154,6 @@ export default function Transactions({ transactions, account, setAccount, fetchT
     );
   }
 
-
   return (
     <div className={styles.transactionsContainer}>
       <div className={styles.filters}>
@@ -167,7 +166,8 @@ export default function Transactions({ transactions, account, setAccount, fetchT
           ? <h1>Sem transações inseridas</h1>
           : transactions.map((transaction) => (
             <tr key={transaction._id}>
-              <td className={styles.transactionsCardTitle} width="50%">{transaction.description}</td>
+              <td className={styles.transactionsCardTitle}>{transaction.description}</td>
+              <td className={styles.transactionsCardQuantity}>{(transaction.quantity || 1) + 'x'}</td>
               <td className={styles.transactionsCardPrice}>
                 <span style={{ color: account.color }} className={styles[transaction.type]}>
                   {priceFormatter(transaction.type === 'outcome' ? -transaction.value : transaction.value)}
