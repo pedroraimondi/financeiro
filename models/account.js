@@ -4,6 +4,7 @@ var account = new Schema({
   variation: { type: String, required: true },
   color: { type: String, required: true },
   name: { type: String, required: true },
+  filter: { type: String, default: 'weakly' }
 }, { timestamps: true });
 
 mongoose.models = {};

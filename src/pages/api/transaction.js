@@ -1,4 +1,5 @@
 import connectToDatabase from "../../../middleware/mongodb";
+import Account from "../../../models/account";
 import Category from "../../../models/category";
 import Transaction from "../../../models/transaction";
 
@@ -9,10 +10,60 @@ export default async function handler(req, res) {
 
   // const { TK } = getCookies({ req, res });
   // const { _id: token } = jwt.decode(TK, process.env.SECRET_KEY) || { token: undefined };
+
   switch (method) {
     case 'GET':
       try {
-        const transactionsArray = await Transaction.find(query ? query : {}).populate('category');
+        const queryOptions = {};
+        if (query.account) { queryOptions.account = query.account }
+        if (query.filter) {
+          const account = await Account.findById(query.account);
+          account.filter = query.filter;
+          await account.save();
+
+          switch (query.filter) {
+            case 'date':
+              const startDate = new Date(query.startDate);
+              startDate.setHours(0, 0, 0, 0);
+
+              const endDate = new Date(query.endDate);
+              endDate.setHours(23, 59, 59, 999);
+
+              queryOptions.createdAt = {
+                $gte: startDate,
+                $lt: endDate
+              }
+              break;
+            case 'monthly':
+              const startOfMonth = new Date();
+              startOfMonth.setHours(0, 0, 0, 0);
+              startOfMonth.setDate(1);
+
+              const endOfMonth = new Date(startOfMonth);
+              endOfMonth.setMonth(endOfMonth.getMonth() + 1);
+
+              queryOptions.createdAt = {
+                $gte: startOfMonth,
+                $lt: endOfMonth
+              };
+              break;
+            case 'weakly':
+            default:
+              const startOfWeek = new Date();
+              startOfWeek.setHours(0, 0, 0, 0);
+              startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+
+              const endOfWeek = new Date(startOfWeek);
+              endOfWeek.setDate(endOfWeek.getDate() + 7);
+
+              queryOptions.createdAt = {
+                $gte: startOfWeek,
+                $lt: endOfWeek
+              };
+              break;
+          }
+        }
+        const transactionsArray = await Transaction.find(queryOptions).populate('category');
 
         const income = transactionsArray.filter((t) => t.type == "income").reduce((total, transaction) => total + transaction.value, 0);
         const outcome = transactionsArray.filter((t) => t.type == "outcome").reduce((total, transaction) => total + transaction.value, 0);
@@ -26,6 +77,7 @@ export default async function handler(req, res) {
 
         return res.status(200).json(transaction);
       } catch (error) {
+        console.log(error)
         return res.status(500).json({ message: "Something went wrong!" });
       }
     case 'POST':

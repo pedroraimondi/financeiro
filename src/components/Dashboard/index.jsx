@@ -1,9 +1,8 @@
 'use client'
 
 import { priceFormatter } from '@/utils/formatter';
-import { ArrowCircleUp, ArrowCircleDown, CurrencyDollar } from 'phosphor-react'
+import { ArrowCircleDown, ArrowCircleUp, CurrencyDollar } from 'phosphor-react';
 import styles from './Dashboard.module.css';
-import { TuiDateRangePicker } from 'nextjs-tui-date-range-picker';
 
 export default function Dashboard({ account, transactions }) {
   const dashboards = [

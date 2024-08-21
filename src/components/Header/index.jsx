@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Logo from '../../../public/logo';
 import styles from './Header.module.css';
 import TransactionFormModal from '../TransactionForm';
+import { toFloat } from '@/utils/formatter';
+import axios from 'axios';
 
 export default function Header({ account, accounts, handleAccounts, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,8 +46,8 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       },
     })
   }
-  
-  const handleSubmit = async (transactionId) => {
+
+  const handleSubmit = async () => {
     const data = {
       description: fields.description.value,
       quantity: fields.quantity.value,
@@ -64,7 +66,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
     }
 
     await axios.post('/api/transaction', data);
-    fetchTransactions()
+    fetchTransactions();
     setIsOpen(false);
   }
 
@@ -86,12 +88,12 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
 
       </div>
 
-      <TransactionFormModal 
+      <TransactionFormModal
         account={account}
         fields={fields}
         setFields={setFields}
-        isOpen={isOpen} 
-        toggleOpen={toggleOpen} 
+        isOpen={isOpen}
+        toggleOpen={toggleOpen}
         handleSubmit={handleSubmit}
       />
     </div>

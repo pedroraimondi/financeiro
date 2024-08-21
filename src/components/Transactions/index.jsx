@@ -2,11 +2,11 @@ import { dateFormatter, maskCurrency, priceFormatter, toFloat } from '@/utils/fo
 import styles from './Transactions.module.css';
 import { Pencil, Trash } from 'phosphor-react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import TransactionFormModal from '../TransactionForm';
 import toast from 'react-hot-toast';
 
-export default function Transactions({ transactions, account, fetchTransactions }) {
+export default function Transactions({ transactions, account, setAccount, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [fields, setFields] = useState({
     description: { value: '' },
@@ -58,12 +58,20 @@ export default function Transactions({ transactions, account, fetchTransactions 
           <button style={{ backgroundColor: account.color }} onClick={() => { deleteTransaction(); toast.dismiss(t.id) }}>
             Sim
           </button>
-          <button style={{ backgroundColor: "#AB222E"}} onClick={() => toast.dismiss(t.id)}>
+          <button style={{ backgroundColor: "#AB222E" }} onClick={() => toast.dismiss(t.id)}>
             Não
           </button>
         </div>
       </div>
-    ));
+    ),
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
+    );
 
   }
 
@@ -127,8 +135,33 @@ export default function Transactions({ transactions, account, fetchTransactions 
     setIsOpen(false);
   }
 
+  const handleSetFilter = (filter) => {
+    setAccount({ ...account, filter });;
+    toast.promise(
+      fetchTransactions(filter),
+      {
+        loading: 'Salvando filtro e atualizando listagem',
+        success: 'Filtro salvo e lista atualizada',
+        error: 'Erro ao salvar e filtrar lista'
+      },
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
+    );
+  }
+
+
   return (
     <div className={styles.transactionsContainer}>
+      <div className={styles.filters}>
+        <button onClick={() => handleSetFilter('weakly')} className={account.filter == 'weakly' && styles.filterActive}>Semanal</button>
+        <button onClick={() => handleSetFilter('monthly')} className={account.filter == 'monthly' && styles.filterActive}>Mensal</button>
+        <button onClick={() => handleSetFilter('date')} className={account.filter == 'date' && styles.filterActive}>Data</button>
+      </div>
       <tbody className={styles.table}>
         {!transactions?.length
           ? <h1>Sem transações inseridas</h1>

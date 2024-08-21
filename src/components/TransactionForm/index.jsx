@@ -5,6 +5,7 @@ import axios from 'axios';
 import Input from '@/elements/Input';
 import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react';
 import Modal from '../Modal/Modal';
+import toast from 'react-hot-toast';
 
 export default function TransactionFormModal({ account, fields, setFields, isOpen, toggleOpen, handleSubmit }) {
 
@@ -153,6 +154,24 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
 
   }
 
+  const handleSubmitToast = (transactionId) => {
+    toast.promise(
+      handleSubmit(transactionId),
+      {
+        loading: 'Salvando transação...',
+        success: 'Sucesso',
+        error: 'Erro ao tentar salvar transação...'
+      },
+      {
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      }
+    )
+  }
+
   return (
     <Modal isOpen={isOpen} toggleOpen={toggleOpen}>
       <div className={styles.modalForm}>
@@ -164,7 +183,7 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
             <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>
           </div>
         </div>
-        <Button onClick={() => handleSubmit(fields?.transactionId)} variation="primary" color={account.color}>Salvar</Button>
+        <Button onClick={() => handleSubmitToast(fields?.transactionId)} variation="primary" color={account.color}>Salvar</Button>
       </div>
     </Modal>
   )

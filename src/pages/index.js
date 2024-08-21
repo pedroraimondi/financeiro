@@ -16,14 +16,12 @@ export default function Home({ accounts: accountsString }) {
   const [transactions, setTransactions] = useState({ transactions: [], income: 0, outcome: 0, total: 0 });
   const [account, setAccount] = useState(accounts[0] || {});
 
-  const fetchTransactions = () => axios.get('/api/transaction', { params: { account: account._id } })
-    .then((response) => {
-      setTransactions(response.data);
-    });
+  const fetchTransactions = async (filter) => {
+    axios.get('/api/transaction', { params: { account: account._id, filter: filter || account.filter } })
+      .then((response) => { setTransactions(response.data) })
+  };
 
-  useEffect(() => {
-    fetchTransactions()
-  }, [account])
+  useEffect(() => { fetchTransactions() }, [account])
 
   const { width } = useWindowSize();
 
@@ -40,10 +38,10 @@ export default function Home({ accounts: accountsString }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <Toaster/>
+        <Toaster />
         <Header account={account} transactions={transactions} fetchTransactions={fetchTransactions} accounts={accounts} handleAccounts={handleAccounts} />
         <Dashboard transactions={transactions} account={account} />
-        <Transactions transactions={transactions.transactions} width={width} account={account} fetchTransactions={fetchTransactions} />
+        <Transactions transactions={transactions.transactions} width={width} account={account} setAccount={setAccount} fetchTransactions={fetchTransactions} />
       </main>
     </>
   );
