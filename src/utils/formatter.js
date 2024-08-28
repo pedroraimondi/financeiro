@@ -40,5 +40,5 @@ export const maskCurrency = (valor, locale = 'pt-BR', currency = 'BRL') => {
 }
 
 export const toFloat = (stringValue) => {
-  return parseFloat(stringValue.replace(/[^\d.,]/g, '').replace(".", "").replace(",", "."))
+  return parseFloat(stringValue?.replace(/[^\d.,]/g, '')?.replace(".", "")?.replace(",", "."))
 }

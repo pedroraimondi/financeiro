@@ -9,7 +9,8 @@ var transaction = new Schema({
   destination: { type: String, enum: ['Prestador', 'Empresa'] },
   recipients: [{ quantity: Number, name: String }],
   account: { type: Schema.Types.ObjectId, ref: 'Account' },
-}, { timestamps: true });
+  createdAt: { type: Date, default: Date.now }
+});
 
 mongoose.models = {};
 

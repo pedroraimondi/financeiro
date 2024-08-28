@@ -16,12 +16,22 @@ export default async function handler(req, res) {
       try {
         const queryOptions = {};
         if (query.account) { queryOptions.account = query.account }
+
+        console.log('query', query)
+
         if (query.filter) {
+          query.filter = JSON.parse(query.filter);
+
+          console.log('query.filter', query.filter.filter)
+
           const account = await Account.findById(query.account);
-          account.filter = query.filter;
+          account.filter = query.filter.filter;
           await account.save();
 
-          switch (query.filter) {
+          if (query.filter?.recipients) {
+            queryOptions['recipients.name'] = { $regex: query.filter.recipients, $options: 'i' }
+          }
+          switch (query.filter.filter) {
             case 'date':
               const startDate = new Date(query.startDate);
               startDate.setHours(0, 0, 0, 0);
@@ -48,7 +58,6 @@ export default async function handler(req, res) {
               };
               break;
             case 'weakly':
-            default:
               const startOfWeek = new Date();
               startOfWeek.setHours(0, 0, 0, 0);
               startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -61,9 +70,15 @@ export default async function handler(req, res) {
                 $lt: endOfWeek
               };
               break;
+            case 'yearly':
+            default:
+              break;
           }
         }
+
         const transactionsArray = await Transaction.find(queryOptions).populate('category');
+
+        console.log(queryOptions)
 
         const income = transactionsArray.filter((t) => t.type == "income").reduce((total, transaction) => total + transaction.value, 0);
         const outcome = transactionsArray.filter((t) => t.type == "outcome").reduce((total, transaction) => total + transaction.value, 0);
@@ -114,6 +129,7 @@ export default async function handler(req, res) {
         }
         let hasChange = Object.keys(body).some(arg => updatedTransaction[arg] && (updatedTransaction[arg] !== arg[body]));
         if (hasChange) { for (let arg in body) { updatedTransaction[arg] = body[arg]; } };
+        updatedTransaction.createdAt = new Date(body.createdAt);
         await updatedTransaction.save();
         return res.status(200).json({ message: "Success" })
       } catch (error) {

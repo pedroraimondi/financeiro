@@ -1,17 +1,21 @@
-import { dateFormatter, maskCurrency, priceFormatter, toFloat } from '@/utils/formatter';
-import styles from './Transactions.module.css';
-import { Pencil, Trash } from 'phosphor-react';
+import { dateNowInString } from '@/utils/date';
+import { priceFormatter, toFloat } from '@/utils/formatter';
 import axios from 'axios';
-import { useEffect, useState } from 'react';
-import TransactionFormModal from '../TransactionForm';
+import { Pencil, Trash } from 'phosphor-react';
+import { useState } from 'react';
 import toast from 'react-hot-toast';
+import TransactionFormModal from '../TransactionForm';
+import styles from './Transactions.module.css';
+import Input from '@/elements/Input';
 
 export default function Transactions({ transactions, account, setAccount, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [tecValue, setTecValue] = useState('');
   const [fields, setFields] = useState({
     description: { value: '' },
     quantity: { value: '' },
     price: { value: '' },
+    date: { value: dateNowInString() },
     category: { value: '' },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
@@ -25,6 +29,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
     },
   });
 
+
   const toggleOpen = (status) => {
     setIsOpen(status != undefined ? status : !isOpen)
     setFields({
@@ -32,6 +37,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       price: { value: '' },
       quantity: { value: '' },
       category: { value: '' },
+      date: { value: dateNowInString() },
       transactionType: { value: 'income' },
       paymentDestination: { value: '' },
       paymentDestinationData: {
@@ -77,6 +83,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
 
   const handleEdit = (transaction) => {
     setIsOpen(true);
+
     setFields({
       transactionId: transaction._id,
       description: { value: transaction.description },
@@ -89,6 +96,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
           value: transaction.category._id
         }
       },
+      date: { value: transaction.createdAt.split('T')[0] },
       transactionType: { value: transaction.type },
       paymentDestination: transaction.destination
         ? {
@@ -101,7 +109,8 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       paymentDestinationData: {
         value: transaction.recipients?.length
           ? transaction.recipients.map(({ name, quantity }) => ({
-            name: { value: name }, quantity: { value: quantity }
+            name: { value: { label: name, instanceId: name, value: name } },
+            quantity: { value: `R$ ${quantity}`.replace('.', ',') }
           }))
           : [{
             quantity: { value: '' },
@@ -112,12 +121,14 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   }
 
   const handleSubmit = async (transactionId) => {
+
     const data = {
       _id: transactionId,
       description: fields.description.value,
       quantity: fields.quantity.value,
       value: toFloat(fields.price.value),
       category: fields.category?.value?.label,
+      createdAt: new Date(fields?.date?.value),
       type: fields.transactionType.value,
       account: account._id,
     }
@@ -126,7 +137,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       data.destination = fields.paymentDestination.value?.value;
       data.recipients = fields.paymentDestinationData.value.map((recipient) => ({
         quantity: toFloat(recipient.quantity.value),
-        name: recipient.name.value
+        name: recipient.name.value?.label
       }))
     }
 
@@ -136,7 +147,11 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   }
 
   const handleSetFilter = (filter) => {
-    setAccount({ ...account, filter });;
+    if (filter.filter) { 
+      setTecValue('') 
+      fetchTransactions();
+    }
+    setAccount({ ...account, filter: JSON.stringify(filter) });;
     toast.promise(
       fetchTransactions(filter),
       {
@@ -154,12 +169,39 @@ export default function Transactions({ transactions, account, setAccount, fetchT
     );
   }
 
+  const dateFormatter = (date) => date.split('T')[0].replaceAll('-', '/')
+
+  const inputProps = {
+    field: {
+      value: tecValue,
+      name: 'tec',
+      type: 'select',
+      isCreatable: true,
+      isClearable: true,
+      isSearchable: true,
+      placeholder: 'Técnico',
+      onChange: ({ target: { value } }) => {
+        setTecValue(value);
+        if (value?.label) handleSetFilter({ recipients: value?.label })
+      },
+      loadOptions: (query, callback) => axios.get('/api/category')
+        .then((res) => {
+          callback(res.data
+            ?.filter((option) => option.label.toLowerCase()?.normalize("NFD").includes(query.toLowerCase()?.normalize("NFD")))
+            ?.map((option) => ({ instanceId: option._id, label: option.label, value: option._id }))
+          )
+        })
+    }
+  }
+
   return (
     <div className={styles.transactionsContainer}>
       <div className={styles.filters}>
-        <button onClick={() => handleSetFilter('weakly')} className={account.filter == 'weakly' && styles.filterActive}>Semanal</button>
-        <button onClick={() => handleSetFilter('monthly')} className={account.filter == 'monthly' && styles.filterActive}>Mensal</button>
-        <button onClick={() => handleSetFilter('date')} className={account.filter == 'date' && styles.filterActive}>Data</button>
+        Técnico: <Input {...inputProps} />
+        <button onClick={() => handleSetFilter({ filter: 'weakly' })} className={account.filter == 'weakly' && styles.filterActive}>Semanal</button>
+        <button onClick={() => handleSetFilter({ filter: 'monthly' })} className={account.filter == 'monthly' && styles.filterActive}>Mensal</button>
+        <button onClick={() => handleSetFilter({ filter: 'yearly' })} className={account.filter == 'yearly' && styles.filterActive}>Anual</button>
+        <button onClick={() => handleSetFilter({ filter: 'date' })} className={account.filter == 'date' && styles.filterActive}>Data</button>
       </div>
       <tbody className={styles.table}>
         {!transactions?.length
@@ -175,7 +217,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
               </td>
               <td className={styles.transactionsCardCategory}>{transaction.category.label}</td>
               <td className={styles.transactionsCardCreatedAt}>
-                {dateFormatter.format(new Date(transaction.createdAt))}
+                {dateFormatter(transaction.createdAt)}
               </td>
               <td className={styles.options}>
                 <div className={styles.optionsButton} onClick={() => handleEdit(transaction)}>

@@ -1,16 +1,16 @@
-import styles from './TransactionForm.module.css';
 import Button from '@/elements/Button';
-import { toFloat } from '@/utils/formatter';
-import axios from 'axios';
 import Input from '@/elements/Input';
+import axios from 'axios';
 import { ArrowCircleDown, ArrowCircleUp } from 'phosphor-react';
-import Modal from '../Modal/Modal';
 import toast from 'react-hot-toast';
+import Modal from '../Modal/Modal';
+import styles from './TransactionForm.module.css';
 
 export default function TransactionFormModal({ account, fields, setFields, isOpen, toggleOpen, handleSubmit }) {
 
   const onChange = (e) => {
     const { target: { value, name } } = e;
+
     setFields((oldFields) => {
       const newFields = { ...oldFields };
       newFields[name].value = value;
@@ -60,6 +60,13 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
           )
         })
     },
+    date: {
+      ...fields.date,
+      name: 'date',
+      type: 'date',
+      placeholder: 'Data',
+      onChange
+    },
     paymentDestination: {
       ...fields.paymentDestination,
       name: 'paymentDestination',
@@ -95,7 +102,9 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
         },
         name: {
           name: 'name',
-          type: 'text',
+          type: 'select',
+          isCreatable: true,
+          isSearchable: true,
           placeholder: 'Nome',
           onChange: (value, i) => {
             setFields((oldFields) => {
@@ -103,7 +112,14 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
               newFields.paymentDestinationData.value[i].name.value = value;
               return newFields;
             })
-          }
+          },
+          loadOptions: (query, callback) => axios.get('/api/category')
+            .then((res) => {
+              callback(res.data
+                ?.filter((option) => option.label.toLowerCase()?.normalize("NFD").includes(query.toLowerCase()?.normalize("NFD")))
+                ?.map((option) => ({ instanceId: option._id, label: option.label, value: option._id }))
+              )
+            })
         }
       },
       onAddField: () => {
@@ -127,11 +143,6 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
       },
     }
   }))()
-
-  // if (isPaymentDestinationDisabled) {
-  //   delete transactionFields.paymentDestination
-  //   delete transactionFields.paymentDestinationData
-  // }
 
   const label = fields?.transactionId ? 'Editar' : 'Nova'
 
@@ -160,7 +171,7 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
       {
         loading: 'Salvando transação...',
         success: 'Sucesso',
-        error: 'Erro ao tentar salvar transação...'
+        error: (err) => { console.log(err); return 'Erro ao tentar salvar transação...' }
       },
       {
         style: {
@@ -170,6 +181,7 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
         },
       }
     )
+
   }
 
   return (

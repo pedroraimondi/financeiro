@@ -18,6 +18,10 @@
   gap: 8px;
 }
 
+.filters #tec .css-1f43avz-a11yText-A11yText {
+  z-index: 1 !important;
+}
+
 .filters {
   display: flex;
   gap: 16px;

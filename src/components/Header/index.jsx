@@ -7,6 +7,7 @@ import styles from './Header.module.css';
 import TransactionFormModal from '../TransactionForm';
 import { toFloat } from '@/utils/formatter';
 import axios from 'axios';
+import { dateNowInString } from '@/utils/date';
 
 export default function Header({ account, accounts, handleAccounts, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -15,6 +16,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
     quantity: { value: '' },
     price: { value: '' },
     category: { value: '' },
+    date: { value: dateNowInString() },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
     paymentDestinationData: {
@@ -34,6 +36,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       price: { value: '' },
       quantity: { value: '' },
       category: { value: '' },
+      date: { value: dateNowInString() },
       transactionType: { value: 'income' },
       paymentDestination: { value: '' },
       paymentDestinationData: {
@@ -48,11 +51,13 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
   }
 
   const handleSubmit = async () => {
+
     const data = {
       description: fields.description.value,
       quantity: fields.quantity.value,
       value: toFloat(fields.price.value),
       category: fields.category?.value?.label,
+      createdAt: new Date(fields.date?.value),
       type: fields.transactionType.value,
       account: account._id,
     }
@@ -61,7 +66,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       data.destination = fields.paymentDestination.value?.value;
       data.recipients = fields.paymentDestinationData.value.map((recipient) => ({
         quantity: toFloat(recipient.quantity.value),
-        name: recipient.name.value
+        name: recipient.name.value?.label
       }))
     }
 
