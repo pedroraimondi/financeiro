@@ -16,8 +16,8 @@ export default function Home({ accounts: accountsString }) {
   const [transactions, setTransactions] = useState({ transactions: [], income: 0, outcome: 0, total: 0 });
   const [account, setAccount] = useState(accounts[0] || {});
 
-  const fetchTransactions = async (filter) => {
-    axios.get('/api/transaction', { params: { account: account._id, filter: account.filter } })
+  const fetchTransactions = async () => {
+    axios.get('/api/transaction', { params: { account: account._id, filter: account?.filter ? JSON.stringify(account?.filter) : null } })
       .then((response) => { setTransactions(response.data) })
   };
 

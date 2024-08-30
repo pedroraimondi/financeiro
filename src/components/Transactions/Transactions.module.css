@@ -15,16 +15,11 @@
   width: 100%;
   justify-content: center;
   align-items: center;
-  gap: 8px;
+  gap: 16px;
 }
 
 .filters #tec .css-1f43avz-a11yText-A11yText {
   z-index: 1 !important;
-}
-
-.filters {
-  display: flex;
-  gap: 16px;
 }
 
 .filters button {
@@ -48,6 +43,11 @@
 .filters button.filterActive {
   background-color: #fff;
   color: var(--gray-700);
+}
+
+.filterOptions {
+  display: flex;
+  gap: 5px;
 }
 
 .transactionsCardQuantity {

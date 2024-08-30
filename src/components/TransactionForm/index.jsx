@@ -41,7 +41,7 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
       ...fields.price,
       name: 'price',
       type: 'price',
-      placeholder: 'Preço',
+      placeholder: 'Preço total',
       onChange
     },
     category: {
@@ -65,6 +65,17 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
       name: 'date',
       type: 'date',
       placeholder: 'Data',
+      onChange
+    },
+    status: {
+      ...fields.status,
+      name: 'status',
+      type: 'select',
+      placeholder: 'Status',
+      options: [
+        { label: 'Pendente', value: 'Pendente' },
+        { label: 'Concluído', value: 'Concluído' },
+      ],
       onChange
     },
     paymentDestination: {
@@ -189,7 +200,7 @@ export default function TransactionFormModal({ account, fields, setFields, isOpe
       <div className={styles.modalForm}>
         <h2>{label} Transação</h2>
         <div className={styles.modalFormGrid}>
-          {Object.values(transactionFields).map((field) => <Input key={field.name} field={field} setField={setFields} />)}
+          {Object.values(transactionFields).map((field) => <Input key={field.name} {...field} setField={setFields} />)}
           <div className={styles.inputButton}>
             <Button color={fields?.transactionType?.value == "income" && account.color} onClick={() => { handleTransactionTypeButtonsClick('income') }} variation={fields?.transactionType?.value == "income" ? "primary" : "dark"}><ArrowCircleUp size={24} color={fields?.transactionType?.value == "income" ? "#FFF" : account?.color} /> Entrada</Button>
             <Button onClick={() => onChange({ target: { name: 'transactionType', value: 'outcome' } })} variation={fields?.transactionType?.value == "outcome" ? "red" : "dark"}><ArrowCircleDown size={24} color={fields?.transactionType?.value == "outcome" ? "#FFF" : "#F75A68"} />Saida</Button>

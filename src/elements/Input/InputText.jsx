@@ -1,10 +1,10 @@
 import styles from './Input.module.css'
 
-export default function InputText({ field, i, ...props }) {
+export default function InputText({ i, ...props }) {
 
-  const onChange = (e) => { field.onChange(e, i) }
+  const onChange = (e) => { props.onChange(e, i) }
 
   return (
-    <input style={{ gridArea: field?.name }} className={`${styles.input} ${field?.disabled && styles.disabled}`} {...field} onChange={onChange} {...props} />
+    <input style={{ gridArea: props?.name }} className={`${styles.input} ${props?.disabled && styles.disabled}`} {...props} onChange={onChange} {...props} />
   )
 }

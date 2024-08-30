@@ -16,6 +16,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
     quantity: { value: '' },
     price: { value: '' },
     category: { value: '' },
+    status: { value: '' },
     date: { value: dateNowInString() },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
@@ -36,6 +37,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       price: { value: '' },
       quantity: { value: '' },
       category: { value: '' },
+      status: { value: '' },
       date: { value: dateNowInString() },
       transactionType: { value: 'income' },
       paymentDestination: { value: '' },
@@ -57,6 +59,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
       quantity: fields.quantity.value,
       value: toFloat(fields.price.value),
       category: fields.category?.value?.label,
+      status: fields.status?.value?.value,
       createdAt: new Date(fields.date?.value),
       type: fields.transactionType.value,
       account: account._id,
@@ -83,7 +86,7 @@ export default function Header({ account, accounts, handleAccounts, fetchTransac
 
         <div className={styles.accounts}>
           {Object.values(accounts)?.map((acc) => (
-            <Button color={acc.color} disabled={acc._id != account._id} onClick={() => handleAccounts(acc)}>{acc.name}</Button>
+            <Button key={acc._id} color={acc.color} disabled={acc._id != account._id} onClick={() => handleAccounts(acc)}>{acc.name}</Button>
           ))}
         </div>
 

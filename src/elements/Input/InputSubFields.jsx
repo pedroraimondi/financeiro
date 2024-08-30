@@ -2,7 +2,7 @@ import { PlusCircle, Trash } from 'phosphor-react';
 import styles from './Input.module.css';
 import Input from './index';
 
-export default function SubFields({ field, ...props }) {
+export default function SubFields(field) {
   const disabledStyle = field?.disabled && styles.disabled
   return (
     <div style={{ gridArea: field?.name }} className={styles.inputMultipleContainer}>
@@ -25,7 +25,7 @@ export default function SubFields({ field, ...props }) {
 
               const customField = { ...subField, value, onChange, disabled }
 
-              return <Input key={subField.name} field={customField} i={i} />
+              return <Input key={subField.name} {...customField} i={i} />
             })}
 
             <div className={styles.removeButton} onClick={() => !field?.disabled && field?.onRemoveField(i)}>

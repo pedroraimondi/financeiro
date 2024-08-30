@@ -16,22 +16,18 @@ export default async function handler(req, res) {
       try {
         const queryOptions = {};
         if (query.account) { queryOptions.account = query.account }
-
-        console.log('query', query)
-
         if (query.filter) {
           query.filter = JSON.parse(query.filter);
 
-          console.log('query.filter', query.filter.filter)
-
           const account = await Account.findById(query.account);
-          account.filter = query.filter.filter;
+          account.filter = { period: query.filter.period };
           await account.save();
 
           if (query.filter?.recipients) {
-            queryOptions['recipients.name'] = { $regex: query.filter.recipients, $options: 'i' }
+            queryOptions['recipients.name'] = new RegExp(".*" + query.filter.recipients + ".*", "i");
           }
-          switch (query.filter.filter) {
+
+          switch (query.filter.period) {
             case 'date':
               const startDate = new Date(query.startDate);
               startDate.setHours(0, 0, 0, 0);
@@ -71,14 +67,24 @@ export default async function handler(req, res) {
               };
               break;
             case 'yearly':
+              const startOfYear = new Date();
+              startOfYear.setMonth(0, 1); // Janeiro 1
+              startOfYear.setHours(0, 0, 0, 0);
+
+              const endOfYear = new Date(startOfYear);
+              endOfYear.setFullYear(endOfYear.getFullYear() + 1);
+
+              queryOptions.createdAt = {
+                $gte: startOfYear,
+                $lt: endOfYear
+              };
+              break;
             default:
               break;
           }
         }
 
         const transactionsArray = await Transaction.find(queryOptions).populate('category');
-
-        console.log(queryOptions)
 
         const income = transactionsArray.filter((t) => t.type == "income").reduce((total, transaction) => total + transaction.value, 0);
         const outcome = transactionsArray.filter((t) => t.type == "outcome").reduce((total, transaction) => total + transaction.value, 0);
@@ -138,7 +144,6 @@ export default async function handler(req, res) {
       }
     case 'DELETE':
       try {
-        console.log(query)
         await Transaction.findByIdAndDelete(query);
         return res.status(200).json({ message: "Success" });
       } catch (error) {

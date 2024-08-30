@@ -2,24 +2,22 @@ import Select from "react-select/async-creatable";
 import './Input.module.css'
 
 export default function InputSelect({
-  field: {
-    onChange,
-    isMulti,
-    options,
-    loadOptions,
-    loadEmpty,
-    isClearable,
-    name,
-    disabled,
-    isCreatable,
-    placeholder = 'Selecione',
-    isSearchable = false,
-    filter,
-    filterField,
-    noOptionsMessage,
-    handleCreate,
-    value
-  },
+  onChange,
+  isMulti,
+  options,
+  loadOptions,
+  loadEmpty,
+  isClearable,
+  name,
+  disabled,
+  isCreatable,
+  placeholder = 'Selecione',
+  isSearchable = false,
+  filter,
+  filterField,
+  noOptionsMessage,
+  handleCreate,
+  value,
   ...props }) {
 
   const loadOptionsHandler = (inputValue, callback) => {

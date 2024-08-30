@@ -4,7 +4,7 @@ import InputText from "./InputText";
 import InputSelect from "./InputSelect";
 
 export default function Input(props) {
-  const { type, name } = props.field;
+  const { type, name } = props;
 
   switch (type) {
     case 'select':

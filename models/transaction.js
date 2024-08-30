@@ -7,6 +7,7 @@ var transaction = new Schema({
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   type: { type: String, enum: ['income', 'outcome'], required: true },
   destination: { type: String, enum: ['Prestador', 'Empresa'] },
+  status: { type: String, enum: ['Pendente', 'Concluído'] },
   recipients: [{ quantity: Number, name: String }],
   account: { type: Schema.Types.ObjectId, ref: 'Account' },
   createdAt: { type: Date, default: Date.now }

@@ -1,3 +1,4 @@
+import Input from '@/elements/Input';
 import { dateNowInString } from '@/utils/date';
 import { priceFormatter, toFloat } from '@/utils/formatter';
 import axios from 'axios';
@@ -6,17 +7,18 @@ import { useState } from 'react';
 import toast from 'react-hot-toast';
 import TransactionFormModal from '../TransactionForm';
 import styles from './Transactions.module.css';
-import Input from '@/elements/Input';
 
 export default function Transactions({ transactions, account, setAccount, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
   const [tecValue, setTecValue] = useState('');
+  const [dateValue, setDateValue] = useState('');
   const [fields, setFields] = useState({
     description: { value: '' },
     quantity: { value: '' },
     price: { value: '' },
     date: { value: dateNowInString() },
     category: { value: '' },
+    status: { value: '' },
     transactionType: { value: 'income' },
     paymentDestination: { value: '' },
     paymentDestinationData: {
@@ -29,7 +31,6 @@ export default function Transactions({ transactions, account, setAccount, fetchT
     },
   });
 
-
   const toggleOpen = (status) => {
     setIsOpen(status != undefined ? status : !isOpen)
     setFields({
@@ -37,6 +38,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       price: { value: '' },
       quantity: { value: '' },
       category: { value: '' },
+      status: { value: '' },
       date: { value: dateNowInString() },
       transactionType: { value: 'income' },
       paymentDestination: { value: '' },
@@ -83,12 +85,12 @@ export default function Transactions({ transactions, account, setAccount, fetchT
 
   const handleEdit = (transaction) => {
     setIsOpen(true);
-
     setFields({
       transactionId: transaction._id,
       description: { value: transaction.description },
       price: { value: `R$ ${transaction.value}`.replace('.', ',') },
       quantity: { value: transaction.quantity || 1 },
+      status: { value: { label: transaction?.status || 'Pendente', value: transaction?.status || 'Pendente' } },
       category: {
         value: {
           label: transaction.category.label,
@@ -126,6 +128,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       _id: transactionId,
       description: fields.description.value,
       quantity: fields.quantity.value,
+      status: fields.status?.value?.value,
       value: toFloat(fields.price.value),
       category: fields.category?.value?.label,
       createdAt: new Date(fields?.date?.value),
@@ -147,13 +150,9 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   }
 
   const handleSetFilter = (filter) => {
-    if (filter.filter) { 
-      setTecValue('') 
-      fetchTransactions();
-    }
-    setAccount({ ...account, filter: JSON.stringify(filter) });;
+    setAccount({ ...account, filter: { ...account.filter, ...filter } });;
     toast.promise(
-      fetchTransactions(filter),
+      fetchTransactions(),
       {
         loading: 'Salvando filtro e atualizando listagem',
         success: 'Filtro salvo e lista atualizada',
@@ -172,7 +171,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   const dateFormatter = (date) => date.split('T')[0].replaceAll('-', '/')
 
   const inputProps = {
-    field: {
+    tec: {
       value: tecValue,
       name: 'tec',
       type: 'select',
@@ -182,7 +181,11 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       placeholder: 'Técnico',
       onChange: ({ target: { value } }) => {
         setTecValue(value);
-        if (value?.label) handleSetFilter({ recipients: value?.label })
+        if (value?.label) {
+          handleSetFilter({ period: account?.filter?.period || 'monthly', recipients: value?.label })
+        } else {
+          setAccount({ ...account, filter: { period: account?.filter?.period || 'monthly' } });;
+        }
       },
       loadOptions: (query, callback) => axios.get('/api/category')
         .then((res) => {
@@ -191,17 +194,34 @@ export default function Transactions({ transactions, account, setAccount, fetchT
             ?.map((option) => ({ instanceId: option._id, label: option.label, value: option._id }))
           )
         })
+    },
+    date: {
+      value: dateValue,
+      name: 'date',
+      type: 'date',
+      onChange: ({ target: { value } }) => {
+        // setTecValue(value);
+        // if (value?.label) {
+        //   handleSetFilter({ period: account?.filter?.period || 'monthly', recipients: value?.label })
+        // } else {
+        //   setAccount({ ...account, filter: { period: account?.filter?.period || 'monthly' } });;
+        // }
+      }
     }
   }
 
   return (
     <div className={styles.transactionsContainer}>
       <div className={styles.filters}>
-        Técnico: <Input {...inputProps} />
-        <button onClick={() => handleSetFilter({ filter: 'weakly' })} className={account.filter == 'weakly' && styles.filterActive}>Semanal</button>
-        <button onClick={() => handleSetFilter({ filter: 'monthly' })} className={account.filter == 'monthly' && styles.filterActive}>Mensal</button>
-        <button onClick={() => handleSetFilter({ filter: 'yearly' })} className={account.filter == 'yearly' && styles.filterActive}>Anual</button>
-        <button onClick={() => handleSetFilter({ filter: 'date' })} className={account.filter == 'date' && styles.filterActive}>Data</button>
+        Técnico: <Input {...inputProps.tec} />
+        Data: <Input {...inputProps.date} />
+
+        <div className={styles.filterOptions}>
+          <button onClick={() => handleSetFilter({ period: 'weakly' })} className={account?.filter?.period == "weakly" && styles.filterActive}>Semanal</button>
+          <button onClick={() => handleSetFilter({ period: 'monthly' })} className={account?.filter?.period == "monthly" && styles.filterActive}>Mensal</button>
+          <button onClick={() => handleSetFilter({ period: 'yearly' })} className={account?.filter?.period == "yearly" && styles.filterActive}>Anual</button>
+          <button onClick={() => handleSetFilter()}><Trash width={15} height={15} color="#FFF" /></button>
+        </div>
       </div>
       <tbody className={styles.table}>
         {!transactions?.length
@@ -209,6 +229,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
           : transactions.map((transaction) => (
             <tr key={transaction._id}>
               <td className={styles.transactionsCardTitle}>{transaction.description}</td>
+              <td>{(transaction.status || '-')}</td>
               <td className={styles.transactionsCardQuantity}>{(transaction.quantity || 1) + 'x'}</td>
               <td className={styles.transactionsCardPrice}>
                 <span style={{ color: account.color }} className={styles[transaction.type]}>
