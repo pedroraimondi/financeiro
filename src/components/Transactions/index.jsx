@@ -151,7 +151,12 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   }
 
   const handleSetFilter = (filter) => {
-    setAccount({ ...account, filter: { ...account.filter, ...filter } });;
+    setAccount((oldAccount) => {
+      const newAccount = { ...oldAccount };
+      newAccount.filter = { ...newAccount.filter, ...filter }
+      return newAccount;
+    });
+
     toast.promise(
       fetchTransactions(),
       {
