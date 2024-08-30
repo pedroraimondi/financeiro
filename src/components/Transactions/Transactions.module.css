@@ -12,6 +12,7 @@
 
 .filters {
   display: flex;
+  flex-direction: column;
   width: 100%;
   justify-content: center;
   align-items: center;
@@ -45,6 +46,24 @@
   color: var(--gray-700);
 }
 
+.filtersInputs {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+}
+
+.filtersInputs span {
+  width: 80px;
+}
+
+.filtersInputs input[type="date"] {
+  height: 47px;
+  width: 100% !important; 
+  margin: 4px ;
+
+}
+
 .filterOptions {
   display: flex;
   gap: 5px;
@@ -55,6 +74,9 @@
 }
 
 .transactionsCardTitle {
+  text-overflow: clip;
+  text-overflow: ellipsis;
+
   grid-area: title;
   width: 50px;
   border-top-left-radius: 6px;
@@ -86,10 +108,10 @@
   display: grid;
   width: 100%;
   grid-template-areas:
-    "title title"
-    "quantity price"
-    "createdAt category"
-    "options options"
+    "title title title"
+    "quantity price price"
+    "createdAt status category"
+    "options options options"
   ;
   margin-bottom: 0.5rem;
 }
@@ -110,6 +132,9 @@
 }
 
 .optionsButton {
+  display: flex;
+  align-items: center;
+  height: 60px;
   cursor: pointer;
 }
 
@@ -137,14 +162,10 @@
 }
 
 @media (min-width: 400px) {
-  .transactionsContainer tr {
-    display: table-row;
-  }
-
   .transactionsContainer tbody {
     margin-bottom: unset;
   }
-  
+
   .options {
     border-bottom-right-radius: 6px;
     border-bottom-left-radius: unset;
@@ -155,6 +176,7 @@
   }
 
   .transactionsCardTitle {
+    height: 60px;
     border-radius: 0;
   }
 
@@ -191,17 +213,22 @@
 
   .filters {
     justify-content: flex-end;
+    flex-direction: row;
   }
 
   .transactionsContainer tbody {
     font-size: 1rem;
   }
 
+  .transactionsContainer tr {
+    display: table-row;
+  }
+
   .transactionsContainer td {
     width: 100%;
     width: unset;
     text-align: left;
-    padding: 1rem 1.5rem;
+    padding: 0 0.8rem;
   }
 
 

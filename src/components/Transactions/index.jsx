@@ -3,10 +3,11 @@ import { dateNowInString } from '@/utils/date';
 import { priceFormatter, toFloat } from '@/utils/formatter';
 import axios from 'axios';
 import { Pencil, Trash } from 'phosphor-react';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import toast from 'react-hot-toast';
 import TransactionFormModal from '../TransactionForm';
 import styles from './Transactions.module.css';
+import _ from 'lodash';
 
 export default function Transactions({ transactions, account, setAccount, fetchTransactions }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -170,6 +171,8 @@ export default function Transactions({ transactions, account, setAccount, fetchT
 
   const dateFormatter = (date) => date.split('T')[0].replaceAll('-', '/')
 
+  const debounceUpdateFilter = useCallback(_.debounce((value) => { handleSetFilter({ date: value }) }, 1000), [])
+
   const inputProps = {
     tec: {
       value: tecValue,
@@ -182,7 +185,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       onChange: ({ target: { value } }) => {
         setTecValue(value);
         if (value?.label) {
-          handleSetFilter({ period: account?.filter?.period || 'monthly', recipients: value?.label })
+          handleSetFilter({ recipients: value?.label })
         } else {
           setAccount({ ...account, filter: { period: account?.filter?.period || 'monthly' } });;
         }
@@ -200,12 +203,8 @@ export default function Transactions({ transactions, account, setAccount, fetchT
       name: 'date',
       type: 'date',
       onChange: ({ target: { value } }) => {
-        // setTecValue(value);
-        // if (value?.label) {
-        //   handleSetFilter({ period: account?.filter?.period || 'monthly', recipients: value?.label })
-        // } else {
-        //   setAccount({ ...account, filter: { period: account?.filter?.period || 'monthly' } });;
-        // }
+        setDateValue(value)
+        debounceUpdateFilter(value)
       }
     }
   }
@@ -213,14 +212,14 @@ export default function Transactions({ transactions, account, setAccount, fetchT
   return (
     <div className={styles.transactionsContainer}>
       <div className={styles.filters}>
-        Técnico: <Input {...inputProps.tec} />
-        Data: <Input {...inputProps.date} />
+        <div className={styles.filtersInputs}><span>Técnico: </span> <Input {...inputProps.tec} /></div>
+        <div className={styles.filtersInputs}><span>Data: </span> <Input {...inputProps.date} /></div>
 
         <div className={styles.filterOptions}>
-          <button onClick={() => handleSetFilter({ period: 'weakly' })} className={account?.filter?.period == "weakly" && styles.filterActive}>Semanal</button>
-          <button onClick={() => handleSetFilter({ period: 'monthly' })} className={account?.filter?.period == "monthly" && styles.filterActive}>Mensal</button>
-          <button onClick={() => handleSetFilter({ period: 'yearly' })} className={account?.filter?.period == "yearly" && styles.filterActive}>Anual</button>
-          <button onClick={() => handleSetFilter()}><Trash width={15} height={15} color="#FFF" /></button>
+          <button onClick={() => handleSetFilter({ period: 'weakly' })} className={account?.filter?.period == "weakly" && styles.filterActive}>Semana</button>
+          <button onClick={() => handleSetFilter({ period: 'monthly' })} className={account?.filter?.period == "monthly" && styles.filterActive}>Mês</button>
+          <button onClick={() => handleSetFilter({ period: 'yearly' })} className={account?.filter?.period == "yearly" && styles.filterActive}>Ano</button>
+          <button onClick={() => { setDateValue(''); setAccount({ ...account, filter: {} }) }}><Trash width={15} height={15} color="#FFF" /></button>
         </div>
       </div>
       <tbody className={styles.table}>

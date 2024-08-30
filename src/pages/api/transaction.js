@@ -27,21 +27,11 @@ export default async function handler(req, res) {
             queryOptions['recipients.name'] = new RegExp(".*" + query.filter.recipients + ".*", "i");
           }
 
+          const currentDate = query.filter.date ? new Date(query.filter.date) : new Date();
+
           switch (query.filter.period) {
-            case 'date':
-              const startDate = new Date(query.startDate);
-              startDate.setHours(0, 0, 0, 0);
-
-              const endDate = new Date(query.endDate);
-              endDate.setHours(23, 59, 59, 999);
-
-              queryOptions.createdAt = {
-                $gte: startDate,
-                $lt: endDate
-              }
-              break;
             case 'monthly':
-              const startOfMonth = new Date();
+              const startOfMonth = currentDate;
               startOfMonth.setHours(0, 0, 0, 0);
               startOfMonth.setDate(1);
 
@@ -54,7 +44,7 @@ export default async function handler(req, res) {
               };
               break;
             case 'weakly':
-              const startOfWeek = new Date();
+              const startOfWeek = currentDate;
               startOfWeek.setHours(0, 0, 0, 0);
               startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
 
@@ -67,7 +57,7 @@ export default async function handler(req, res) {
               };
               break;
             case 'yearly':
-              const startOfYear = new Date();
+              const startOfYear = currentDate;
               startOfYear.setMonth(0, 1); // Janeiro 1
               startOfYear.setHours(0, 0, 0, 0);
 
@@ -83,6 +73,8 @@ export default async function handler(req, res) {
               break;
           }
         }
+
+        console.log(queryOptions)
 
         const transactionsArray = await Transaction.find(queryOptions).populate('category');
 

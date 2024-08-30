@@ -8,7 +8,7 @@ export default function Input(props) {
 
   switch (type) {
     case 'select':
-      return <div style={{ gridArea: name }}><InputSelect {...props} /></div>
+      return <div id={"select-" + name} style={{ gridArea: name, border: '2px solid #202024', borderRadius: '6px', width: '100%' }}><InputSelect {...props} /></div>
     case 'price': 
       return <InputPrice {...props} />;
     case 'subFields':
