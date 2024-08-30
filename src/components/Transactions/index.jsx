@@ -214,6 +214,11 @@ export default function Transactions({ transactions, account, setAccount, fetchT
     }
   }
 
+  const formatPrice = (transaction) => {
+    const value = transaction.value / (transaction.quantity || 1);
+    return priceFormatter(transaction.type === 'outcome' ? -value : value)
+  }
+
   return (
     <div className={styles.transactionsContainer}>
       <div className={styles.filters}>
@@ -237,7 +242,7 @@ export default function Transactions({ transactions, account, setAccount, fetchT
               <td className={styles.transactionsCardQuantity}>{(transaction.quantity || 1) + 'x'}</td>
               <td className={styles.transactionsCardPrice}>
                 <span style={{ color: account.color }} className={styles[transaction.type]}>
-                  {priceFormatter(transaction.type === 'outcome' ? -transaction.value : transaction.value)}
+                  {formatPrice(transaction)}
                 </span>
               </td>
               <td className={styles.transactionsCardCategory}>{transaction.category.label}</td>
